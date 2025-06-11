@@ -4,34 +4,28 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { BsArrowsFullscreen, BsXLg } from "react-icons/bs";
 
-// Extrai a secretaria principal
-function secretariaMae(nome) {
-  if (!nome) return "Outro";
-  return nome.split("/")[0].trim();
-}
-
 export function BoxplotAtendimentoPorSecretaria({ data }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleExpand = () => setIsExpanded(prev => !prev);
 
-  // Agrupamento por secretaria
-  const secretariaMap = {};
-
+  // Agrupa os valores de % Atendimento por Competência completa
+  const grupos = {};
   data.forEach(row => {
-    const sec = secretariaMae(row["Competência"]);
-    const pct = Number((row["% Atendimento"] || "0").replace(",", ".").replace("%", ""));
-    if (!secretariaMap[sec]) secretariaMap[sec] = [];
-    secretariaMap[sec].push(pct);
+    const competencia = (row["Competência"] || "Outro").trim();
+    const valor = Number((row["% Atendimento"] || "0").replace(",", ".").replace("%", ""));
+    if (!grupos[competencia]) grupos[competencia] = [];
+    grupos[competencia].push(valor);
   });
 
-  const boxData = Object.entries(secretariaMap).map(([sec, valores]) => ({
+  // Cria os traces do boxplot
+  const boxplots = Object.entries(grupos).map(([departamento, valores]) => ({
     y: valores,
-    name: sec,
+    name: departamento,
     type: "box",
     boxpoints: "outliers",
     marker: { color: "#0d6efd" },
-    line: { color: "#0d6efd" },
-    hoverinfo: "y+name",
+    line: { width: 2 },
+    nameformat: departamento,
   }));
 
   return (
@@ -42,7 +36,7 @@ export function BoxplotAtendimentoPorSecretaria({ data }) {
       <Card.Body>
         <div className="d-flex justify-content-center align-items-center position-relative mb-3">
           <Card.Title className="text-center fs-4 fw-bold w-100 mb-0">
-            Distribuição de Atendimento por Secretaria
+            Distribuição de Atendimento por Departamento
           </Card.Title>
           <Button
             variant="outline-secondary"
@@ -56,39 +50,39 @@ export function BoxplotAtendimentoPorSecretaria({ data }) {
         </div>
 
         <p className="text-muted text-center mb-4">
-          O boxplot exibe a distribuição dos percentuais de atendimento aos critérios de transparência
-          por secretaria. Ele permite identificar a variabilidade, mediana e possíveis outliers em cada área.
+          O gráfico boxplot permite visualizar como os percentuais de atendimento aos critérios de transparência estão distribuídos entre os departamentos. Ele destaca a mediana, a dispersão e os possíveis outliers. Departamentos com caixas altas e estreitas indicam desempenho consistente, enquanto caixas mais baixas ou longas indicam maior variabilidade. Pontos isolados representam desvios.
         </p>
 
         <div style={{ width: "100%", height: "100%", minHeight: 400 }}>
           <Plot
-            data={boxData}
+            data={boxplots}
             layout={{
               autosize: true,
-              height: isExpanded ? window.innerHeight - 150 : 500,
+              height: isExpanded ? window.innerHeight - 150 : 600,
+              boxmode: "group",
               yaxis: {
                 title: "% Atendimento",
                 range: [0, 100],
+                tickvals: [0, 20, 40, 60, 80, 100],
                 gridcolor: "#e9ecef",
               },
               xaxis: {
-                title: "Secretaria",
+                tickangle: -45,
                 automargin: true,
               },
-              margin: { t: 30, l: 60, r: 40, b: 100 },
+              margin: { t: 30, l: 60, r: 60, b: 150 },
               plot_bgcolor: "white",
               paper_bgcolor: "white",
-              boxmode: "group",
+              showlegend: false,
             }}
-            config={{ responsive: true, displayModeBar: false }}
+            config={{ responsive: true, displaylogo: false }}
             useResizeHandler
             style={{ width: "100%", height: "100%" }}
           />
         </div>
 
         <p className="text-muted text-center mt-4">
-          Secretarias com menor mediana ou maior dispersão indicam desafios na padronização da transparência.
-          Este gráfico ajuda a priorizar melhorias internas por departamento.
+          Departamentos com maior variabilidade ou desempenho mediano mais baixo são bons candidatos para diagnósticos aprofundados e ações de melhoria.
         </p>
       </Card.Body>
     </Card>

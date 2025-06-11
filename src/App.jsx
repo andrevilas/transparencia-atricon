@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
 import Masonry from "react-masonry-css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css'; // Certifique-se de que o CSS do masonry está aqui
+import './App.css';
 
 import { CSVUploader } from "./components/CSVUploader";
 import { IndicadoresCards } from "./components/IndicadoresCards";
@@ -17,10 +18,14 @@ import { ParetoPorConsultado } from "./components/ParetoPorConsultado";
 import { BarChartAtendimento } from "./components/BarChartAtendimento";
 import { DispersaoPorCompetencia } from "./components/DispersaoPorCompetencia";
 import { BoxplotAtendimentoPorSecretaria } from "./components/BoxplotAtendimentoPorSecretaria";
+import { GanttChart } from "./components/GanttChart"; // componente novo
 
 export default function App() {
   const [data, setData] = useState([]);
   const [secretaria, setSecretaria] = useState("");
+  const [showGantt, setShowGantt] = useState(false);
+
+  const tableRef = useRef(null);
 
   const secretarias = data.length > 0
     ? [...new Set(data.map(r => (r["Competência"] || "").split("/")[0].trim()))]
@@ -31,6 +36,12 @@ export default function App() {
     default: 2,
     1200: 2,
     768: 1
+  };
+
+  const scrollToTable = () => {
+    if (tableRef.current) {
+      tableRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   return (
@@ -53,17 +64,16 @@ export default function App() {
         <>
           <Row className="mb-3">
             <Col>
-              <IndicadoresCards data={data} />
+              <IndicadoresCards data={data} onClickCard={scrollToTable}/>
             </Col>
           </Row>
 
           <Row className="mb-4">
             <Col>
-              <DashboardSummary data={data} />
+              <DashboardSummary data={data} onClickCard={scrollToTable}/>
             </Col>
           </Row>
 
-          {/* Cards em layout fluido tipo Pinterest */}
           <Masonry
             breakpointCols={breakpointColumnsObj}
             className="my-masonry-grid"
@@ -103,15 +113,30 @@ export default function App() {
               <Card.Body className="p-3">
                 <BoxplotAtendimentoPorSecretaria data={data} threshold={70} />
               </Card.Body>
-            </Card>          
-
+            </Card>
           </Masonry>
 
-          <Row>
+          <Row className="mt-4 mb-2" ref={tableRef}>
             <Col>
               <DataTable data={data} />
             </Col>
           </Row>
+
+          <Row className="mb-4">
+            <Col className="text-center">
+              <Button variant="primary" onClick={() => setShowGantt(!showGantt)}>
+                {showGantt ? "Ocultar Cronograma" : "Exibir Cronograma"}
+              </Button>
+            </Col>
+          </Row>
+
+          {showGantt && (
+            <Row className="mb-4">
+              <Col>
+                <GanttChart />
+              </Col>
+            </Row>
+          )}
         </>
       )}
     </Container>

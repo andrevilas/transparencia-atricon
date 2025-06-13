@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Plot from "react-plotly.js";
+import React, { useState, lazy, Suspense } from "react";
+const Plot = lazy(() => import("react-plotly.js"));
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { BsArrowsFullscreen, BsXLg } from "react-icons/bs";
@@ -55,6 +55,7 @@ export function ParetoPorConsultado({ data, threshold = 70 }) {
       </p>
 
       <div style={{ width: "100%", height: "100%", minHeight: 400 }}>
+        <Suspense fallback={<div className="text-center">Carregando gráfico...</div>}>
         <Plot
           data={[
             {
@@ -123,6 +124,7 @@ export function ParetoPorConsultado({ data, threshold = 70 }) {
           useResizeHandler
           style={{ width: "100%" }}
         />
+        </Suspense>
       </div>
     </Card>
   );

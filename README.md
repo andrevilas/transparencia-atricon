@@ -1,12 +1,93 @@
-# React + Vite
+# Projeto: Painel de Transparência Municipal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este projeto é uma aplicação React com Bootstrap que permite visualizar indicadores de transparência com gráficos, tabelas e um cronograma Gantt interativo.
 
-Currently, two official plugins are available:
+## Componentes principais:
+- Upload de CSV com os dados dos critérios de transparência.
+- Indicadores em cards (atendidos, não atendidos, parcialmente).
+- Gráficos interativos (Pareto, Radar, Boxplot, etc.).
+- Tabela detalhada dos critérios.
+- Cronograma Gantt com modo fullscreen.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## REQUISITOS
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Node.js**: v18.x ou superior (recomendado: v18.18.0 LTS)
+- **npm** (Node Package Manager): v9.x ou superior
+- **Navegador moderno** (Chrome, Edge, Firefox)
+
+---
+
+## INSTALAÇÃO E EXECUÇÃO
+
+1. Clone este repositório ou extraia o projeto em uma pasta local:
+
+   ```bash
+   git clone <url-do-repositorio>
+   # ou
+   descompacte os arquivos.
+   ```
+
+2. Acesse a pasta do projeto via terminal:
+
+   ```bash
+   cd nome-do-projeto
+   ```
+
+3. Instale as dependências necessárias:
+
+   ```bash
+   npm install
+   ```
+
+4. Inicie o servidor de desenvolvimento:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Acesse a aplicação:
+
+   Abra o navegador em: [http://localhost:5173](http://localhost:5173)
+
+---
+
+## ESTRUTURA DO PROJETO
+
+```
+- src/
+  - components/
+    - CSVUploader.jsx
+    - IndicadoresCards.jsx
+    - DashboardSummary.jsx
+    - DataTable.jsx
+    - SecretariaRadar.jsx
+    - ParetoChart.jsx
+    - BoxplotAtendimentoPorSecretaria.jsx
+    - DispersaoPorCompetencia.jsx
+    - GanttChart.jsx
+    - (etc.)
+  - App.jsx
+  - App.css
+- public/
+  - favicon, index.html, etc.
+- package.json
+- vite.config.js (Vite usado como bundler)
+```
+
+---
+
+## OBSERVAÇÕES IMPORTANTES
+
+- O projeto utiliza o **Vite** para desenvolvimento rápido.
+- A biblioteca de gráficos Gantt usada é **react-google-charts**.
+- O cronograma Gantt possui suporte a fullscreen e scroll automático.
+- Dados devem ser fornecidos via upload de CSV no formato esperado.
+
+---
+
+## CONTATO
+
+**Dúvidas ou sugestões?**  
+Entre em contato com a equipe de desenvolvimento.

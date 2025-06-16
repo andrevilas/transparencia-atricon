@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import { RadarChart } from "@mui/x-charts/RadarChart";
+const RadarChart = lazy(() => import("@mui/x-charts/RadarChart"));
 import { BsArrowsFullscreen, BsXLg } from "react-icons/bs";
 
 // Helper para pegar secretaria principal
@@ -53,6 +53,7 @@ export function SecretariaRadar({ data }) {
       </p>
 
       <div style={{ width: "100%", height: "100%", minHeight: 400 }}>
+        <Suspense fallback={<div className="text-center">Carregando gráfico...</div>}>
         <RadarChart
           height={isExpanded ? window.innerHeight - 200 : 400}
           series={[
@@ -76,6 +77,7 @@ export function SecretariaRadar({ data }) {
             tickLabel: { fontSize: 12 }
           }}
         />
+        </Suspense>
       </div>
 
       <p className="text-muted text-center mt-4">

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Plot from "react-plotly.js";
+import React, { useState, lazy, Suspense } from "react";
+const Plot = lazy(() => import("react-plotly.js"));
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { BsArrowsFullscreen, BsXLg } from "react-icons/bs";
@@ -61,6 +61,7 @@ export function BoxplotAtendimentoPorSecretaria({ data }) {
         </p>
 
         <div style={{ width: "100%", height: "100%", minHeight: 400 }}>
+          <Suspense fallback={<div className="text-center">Carregando gráfico...</div>}>
           <Plot
             data={boxData}
             layout={{
@@ -84,6 +85,7 @@ export function BoxplotAtendimentoPorSecretaria({ data }) {
             useResizeHandler
             style={{ width: "100%", height: "100%" }}
           />
+          </Suspense>
         </div>
 
         <p className="text-muted text-center mt-4">
